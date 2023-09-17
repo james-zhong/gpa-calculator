@@ -2,7 +2,7 @@
 ## For NCEA grades  
 Input the results of your assignments/assessments (from Low Not Achieved, Not Achieved, High Not Achieved, Low Achieved, Achieved, High Achieved, Low Merit, Merit, High Merit, Low Excellence, Excellence, and High Excellence) to get your GPA.
 
-Note that this is ::not:: accurate in any way because of other factors such as grades in certain subjects that cannot receive Low/High grades, etc.
+Note that this is ***not*** accurate in any way because of other factors such as grades in certain subjects that cannot receive Low/High grades, etc.
 
 For NCEA Pilot *(worst thing to ever exist)*, convert your pilot grades to NCEA grades:  
 
