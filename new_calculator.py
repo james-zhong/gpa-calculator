@@ -42,11 +42,18 @@ class Calculator(QMainWindow):
         self.initUI()
     
     # Function for creating a grade input and its respective label
-    def createGradeInputs(self, grade):
+    def createGradeInputs(self, grade, x, y):
+        # Default properties of the label for the grade input
         self.label = QtWidgets.QLabel(self)
         self.label.setText(grade)
-        self.header.setAlignment(QtCore.Qt.AlignCenter)
-    
+        self.label.setAlignment(QtCore.Qt.AlignCenter)
+        self.label.move(x, y)
+
+        self.input = QtWidgets.QLineEdit(self)
+        self.input.setAlignment(QtCore.Qt.AlignCenter)
+        self.input.resize(150, 75)
+        self.input.move(x, y + 50)  # Adjust the vertical position as needed
+        
     # Create and add widgets  
     def initUI(self):
         # Title
@@ -56,10 +63,9 @@ class Calculator(QMainWindow):
         self.header.resize(700, 50) # Resize so the text fits
         self.header.move(275, 25) # Move the title to the middle of the screen
         
-        self.label = QtWidgets.QLabel(self, objectName="test")
-        self.label.setText("HI")
-        self.label.resize(100, 300)
-        self.label.move(0, 100)
+        # Input boxes
+        num_rows = 4
+        num_columns = 3
 
 def window():
     app = QApplication(sys.argv)
