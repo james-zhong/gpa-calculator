@@ -1,7 +1,8 @@
-import sys
+import sys, re
 from PyQt5 import QtCore, QtWidgets
 from PyQt5.QtWidgets import QApplication, QMainWindow, QWidget
 
+# Stylesheet for application
 style = """
     * {
         background-color: #272822;
@@ -17,8 +18,12 @@ style = """
         border-radius: 20px;
     }
     
-    QLabel#test {
-        border: 3px solid white;
+    QLabel#input_title {
+    }
+    
+    QLineEdit#input_box {
+        border: 3px solid #2cde85;
+        border-radius: 10px;
     }
 
 """
@@ -33,26 +38,63 @@ grades = [
 class Calculator(QMainWindow):
     def __init__(self):
         super(Calculator, self).__init__()
-        
+
         # Define window properties
-        self.setFixedSize(1250, 750)
+        self.setFixedSize(1118, 750)
         self.setWindowTitle("NCEA GPA Calculator")
         self.setStyleSheet(style)
         
+        # Define UI variables
+        
+        # Define where the coordinates of the first input label should be
+        self.startingLabel_X = 83
+        self.startingLabel_Y = 100
+        
+        # Define where the coordinates of the first input box should be
+        self.startingInput_X = self.startingLabel_X
+        self.startingInput_Y = self.startingLabel_Y + 25
+        
+        # Storage for input boxes so it can be accessed through dictionary
+        self.inputs = {}
+        
+        # Create all the widgets
         self.initUI()
     
     # Function for creating a grade input and its respective label
-    def createGradeInputs(self, grade, x, y):
-        # Default properties of the label for the grade input
-        self.label = QtWidgets.QLabel(self)
+    def createGradeInputs(self, grade, row, column):
+        # Create input label
+        self.label = QtWidgets.QLabel(self, objectName="input_title")
         self.label.setText(grade)
         self.label.setAlignment(QtCore.Qt.AlignCenter)
-        self.label.move(x, y)
-
-        self.input = QtWidgets.QLineEdit(self)
+        self.label.resize(252, 25)
+        self.label.move(self.startingLabel_X + (row * 350), self.startingLabel_Y + (column * 90)) # Move according to the row and column
+        
+        # Create input box
+        self.input = QtWidgets.QLineEdit(self, objectName ="input_box")
         self.input.setAlignment(QtCore.Qt.AlignCenter)
-        self.input.resize(150, 75)
-        self.input.move(x, y + 50)  # Adjust the vertical position as needed
+        self.input.setText("0")
+        self.input.resize(252, 25)
+        self.input.move(self.startingInput_X + (row * 350), self.startingInput_Y + (column * 90))  # Adjust the vertical position as needed
+        
+        # Store input box in dictonary so it can be accessed inividually
+        self.inputs[grade] = self.input
+        
+        # Check when text gets changed in input box
+        self.input.textChanged.connect(self.onInputTextChanged)
+        
+    def onInputTextChanged(self):
+        sender = self.sender() # Widget that changed text
+        text = sender.text()
+        
+        # Ensure that only numbers can be typed
+        numeric_text = re.sub(r'[^0-9]', '', text)
+        sender.setText(numeric_text)
+        
+        # Set text to 0 if input box is empty
+        if text == "":
+            sender.setText("0")   
+        elif text[0] == "0" and text != "0": # Remove the "0" in front of number when not empty
+            sender.setText(text.lstrip("0"))
         
     # Create and add widgets  
     def initUI(self):
@@ -61,11 +103,18 @@ class Calculator(QMainWindow):
         self.header.setText("NCEA GPA Calculator")
         self.header.setAlignment(QtCore.Qt.AlignCenter)
         self.header.resize(700, 50) # Resize so the text fits
-        self.header.move(275, 25) # Move the title to the middle of the screen
+        self.header.move(209, 25) # Move the title to the middle of the screen
         
         # Input boxes
-        num_rows = 4
-        num_columns = 3
+        rows = 3
+        columns = 4
+        
+        for row in range(rows):
+            for column in range(columns):
+                index = row * 4 + column
+                grade = grades[index]
+                
+                self.createGradeInputs(grade, row, column)
 
 def window():
     app = QApplication(sys.argv)
