@@ -1,6 +1,7 @@
 import sys, re
 from PyQt5 import QtCore, QtWidgets
 from PyQt5.QtWidgets import QApplication, QMainWindow, QWidget
+from PyQt5.QtGui import QCursor
 
 # Stylesheet for application
 style = """
@@ -18,14 +19,20 @@ style = """
         border-radius: 20px;
     }
     
-    QLabel#input_title {
-    }
-    
     QLineEdit#input_box {
         border: 3px solid #2cde85;
         border-radius: 10px;
     }
 
+    QPushButton#reset_button {
+        border: 1px solid #2cde85;
+        border-radius: 3px;
+    }
+    
+    QPushButton#reset_button:hover {
+        background-color: #2cde85;
+        border: 3px solid white;
+    }
 """
 
 grades = [
@@ -95,6 +102,11 @@ class Calculator(QMainWindow):
             sender.setText("0")   
         elif text[0] == "0" and text != "0": # Remove the "0" in front of number when not empty
             sender.setText(text.lstrip("0"))
+            
+    # Reset the text for all input boxes (called when reset button pressed)
+    def resetInput(self):
+        for grade in grades:
+            self.inputs[grade].setText("0")
         
     # Create and add widgets  
     def initUI(self):
@@ -115,6 +127,14 @@ class Calculator(QMainWindow):
                 grade = grades[index]
                 
                 self.createGradeInputs(grade, row, column)
+                
+        # Reset input button
+        self.reset = QtWidgets.QPushButton(self, objectName="reset_button")
+        self.reset.setText("Reset Input")
+        self.reset.setCursor(QCursor(QtCore.Qt.PointingHandCursor))
+        self.reset.clicked.connect(self.resetInput)
+        self.reset.resize(252, 50)
+        self.reset.move(83, 450)
 
 def window():
     app = QApplication(sys.argv)
