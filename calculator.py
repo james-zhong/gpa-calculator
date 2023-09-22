@@ -1,4 +1,4 @@
-import sys, re, style
+import sys, re
 from PyQt5 import QtCore, QtWidgets
 from PyQt5.QtWidgets import QApplication, QMainWindow, QWidget
 from PyQt5.QtGui import QCursor
@@ -17,7 +17,10 @@ class Calculator(QMainWindow):
         # Define window properties
         self.setFixedSize(1118, 750)
         self.setWindowTitle("NCEA GPA Calculator")
-        self.setStyleSheet(style.stylesheet.style(self))
+        
+        # Set the stylesheet
+        with open('style.css', 'r') as css_file:
+            self.setStyleSheet(css_file.read())
         
         # Define UI variables
         
