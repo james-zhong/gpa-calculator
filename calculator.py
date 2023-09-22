@@ -1,39 +1,7 @@
-import sys, re
+import sys, re, style
 from PyQt5 import QtCore, QtWidgets
 from PyQt5.QtWidgets import QApplication, QMainWindow, QWidget
 from PyQt5.QtGui import QCursor
-
-# Stylesheet for application
-style = """
-    * {
-        background-color: #272822;
-        color: #f8f8f2;
-        font-family: Verdana;
-    }
-
-
-    QLabel#title {
-        text-align: center;
-        font-size: 20pt;
-        border: 3px solid #2cde85;
-        border-radius: 20px;
-    }
-    
-    QLineEdit#input_box {
-        border: 3px solid #2cde85;
-        border-radius: 10px;
-    }
-
-    QPushButton#reset_button {
-        border: 1px solid #2cde85;
-        border-radius: 3px;
-    }
-    
-    QPushButton#reset_button:hover {
-        background-color: #2cde85;
-        border: 3px solid white;
-    }
-"""
 
 grades = [
     "Low Not Achieved", "Not Achieved", "High Not Achieved",
@@ -49,7 +17,7 @@ class Calculator(QMainWindow):
         # Define window properties
         self.setFixedSize(1118, 750)
         self.setWindowTitle("NCEA GPA Calculator")
-        self.setStyleSheet(style)
+        self.setStyleSheet(style.stylesheet.style(self))
         
         # Define UI variables
         
