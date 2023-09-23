@@ -1,15 +1,16 @@
 import sys, re
+import typing
 from PyQt5 import QtCore, QtWidgets
 from PyQt5.QtWidgets import QApplication, QMainWindow, QWidget
-from PyQt5.QtGui import QCursor
+from PyQt5.QtGui import QCursor, QFont
 
 grades = [
-    "Low Not Achieved", "Not Achieved", "High Not Achieved",
-    "Low Achieved", "Achieved", "High Achieved",
-    "Low Merit", "Merit", "High Merit",
-    "Low Excellence", "Excellence", "High Excellence"
+    "Low Not Achieved", "Low Achieved", "Low Merit",
+    "Low Excellence", "Not Achieved", "Achieved",
+    "Merit", "Excellence", "High Not Achieved",
+    "High Achieved", "High Merit", "High Excellence"
 ]
-
+        
 class Calculator(QMainWindow):
     def __init__(self):
         super(Calculator, self).__init__()
@@ -43,16 +44,18 @@ class Calculator(QMainWindow):
         # Create input label
         self.label = QtWidgets.QLabel(self, objectName="input_title")
         self.label.setText(grade)
+        self.label.setFont(QFont('Verdana', 10))
         self.label.setAlignment(QtCore.Qt.AlignCenter)
         self.label.resize(252, 25)
-        self.label.move(self.startingLabel_X + (row * 350), self.startingLabel_Y + (column * 90)) # Move according to the row and column
+        self.label.move(self.startingLabel_X + (row * 350), self.startingLabel_Y + (column * 115)) # Move according to the row and column
         
         # Create input box
         self.input = QtWidgets.QLineEdit(self, objectName ="input_box")
         self.input.setAlignment(QtCore.Qt.AlignCenter)
         self.input.setText("0")
-        self.input.resize(252, 25)
-        self.input.move(self.startingInput_X + (row * 350), self.startingInput_Y + (column * 90))  # Adjust the vertical position as needed
+        self.input.setFont(QFont('Verdana', 16))
+        self.input.resize(252, 50) 
+        self.input.move(self.startingInput_X + (row * 350), self.startingInput_Y + (column * 115))  # Adjust the vertical position as needed
         
         # Store input box in dictonary so it can be accessed inividually
         self.inputs[grade] = self.input
@@ -105,7 +108,15 @@ class Calculator(QMainWindow):
         self.reset.setCursor(QCursor(QtCore.Qt.PointingHandCursor))
         self.reset.clicked.connect(self.resetInput)
         self.reset.resize(252, 50)
-        self.reset.move(83, 450)
+        self.reset.move(83, 555)
+        
+        # Calculate GPA button
+        self.calc = QtWidgets.QPushButton(self, objectName="reset_button")
+        self.calc.setText("Calculate GPA")
+        self.calc.setCursor(QCursor(QtCore.Qt.PointingHandCursor))
+        #self.calc.clicked.connect(self.resetInput)
+        self.calc.resize(252, 50)
+        self.calc.move(83, 610)
 
 def window():
     app = QApplication(sys.argv)
