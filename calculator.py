@@ -38,7 +38,43 @@ class Calculator(QMainWindow):
         
         # Create all the widgets
         self.initUI()
-    
+        
+    # Create and add widgets  
+    def initUI(self):
+        # Title
+        self.header = QtWidgets.QLabel(self, objectName="title")
+        self.header.setText("NCEA GPA Calculator")
+        self.header.setAlignment(QtCore.Qt.AlignCenter)
+        self.header.resize(700, 50) # Resize so the text fits
+        self.header.move(209, 25) # Move the title to the middle of the screen
+        
+        # Input boxes
+        rows = 3
+        columns = 4
+        
+        for row in range(rows):
+            for column in range(columns):
+                index = row * 4 + column
+                grade = grades[index]
+                
+                self.createGradeInputs(grade, row, column)
+                
+        # Calculate GPA button
+        self.calc = QtWidgets.QPushButton(self, objectName="reset_button")
+        self.calc.setText("Calculate GPA")
+        self.calc.setCursor(QCursor(QtCore.Qt.PointingHandCursor))
+        self.calc.clicked.connect(self.calculateGPA)
+        self.calc.resize(252, 50)
+        self.calc.move(83, 570)
+        
+        # Reset input button
+        self.reset = QtWidgets.QPushButton(self, objectName="reset_button")
+        self.reset.setText("Reset Input")
+        self.reset.setCursor(QCursor(QtCore.Qt.PointingHandCursor))
+        self.reset.clicked.connect(self.resetInput)
+        self.reset.resize(252, 50)
+        self.reset.move(83, 645)
+
     # Function for creating a grade input and its respective label
     def createGradeInputs(self, grade, row, column):
         # Create input label
@@ -62,7 +98,7 @@ class Calculator(QMainWindow):
         
         # Check when text gets changed in input box
         self.input.textChanged.connect(self.onInputTextChanged)
-        
+    
     def onInputTextChanged(self):
         sender = self.sender() # Widget that changed text
         text = sender.text()
@@ -76,47 +112,14 @@ class Calculator(QMainWindow):
             sender.setText("0")   
         elif text[0] == "0" and text != "0": # Remove the "0" in front of number when not empty
             sender.setText(text.lstrip("0"))
-            
+
     # Reset the text for all input boxes (called when reset button pressed)
     def resetInput(self):
         for grade in grades:
             self.inputs[grade].setText("0")
-        
-    # Create and add widgets  
-    def initUI(self):
-        # Title
-        self.header = QtWidgets.QLabel(self, objectName="title")
-        self.header.setText("NCEA GPA Calculator")
-        self.header.setAlignment(QtCore.Qt.AlignCenter)
-        self.header.resize(700, 50) # Resize so the text fits
-        self.header.move(209, 25) # Move the title to the middle of the screen
-        
-        # Input boxes
-        rows = 3
-        columns = 4
-        
-        for row in range(rows):
-            for column in range(columns):
-                index = row * 4 + column
-                grade = grades[index]
-                
-                self.createGradeInputs(grade, row, column)
-                
-        # Reset input button
-        self.reset = QtWidgets.QPushButton(self, objectName="reset_button")
-        self.reset.setText("Reset Input")
-        self.reset.setCursor(QCursor(QtCore.Qt.PointingHandCursor))
-        self.reset.clicked.connect(self.resetInput)
-        self.reset.resize(252, 50)
-        self.reset.move(83, 555)
-        
-        # Calculate GPA button
-        self.calc = QtWidgets.QPushButton(self, objectName="reset_button")
-        self.calc.setText("Calculate GPA")
-        self.calc.setCursor(QCursor(QtCore.Qt.PointingHandCursor))
-        #self.calc.clicked.connect(self.resetInput)
-        self.calc.resize(252, 50)
-        self.calc.move(83, 610)
+    
+    def calculateGPA(self):
+        print("a")
 
 def window():
     app = QApplication(sys.argv)
