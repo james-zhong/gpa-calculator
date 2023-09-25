@@ -1,7 +1,7 @@
 import sys, re
-import typing
-from PyQt5 import QtCore, QtWidgets
-from PyQt5.QtWidgets import QApplication, QMainWindow, QWidget
+from statistics import mean
+from PyQt5 import QtCore, QtWidgets, QtGui
+from PyQt5.QtWidgets import QApplication, QMainWindow
 from PyQt5.QtGui import QCursor, QFont
 
 grades = [
@@ -19,6 +19,10 @@ class Calculator(QMainWindow):
         self.setFixedSize(1118, 750)
         self.setWindowTitle("NCEA GPA Calculator")
         
+        # Custom font
+        QtGui.QFontDatabase.addApplicationFont("assets/Poppins Light.ttf")
+        QtGui.QFontDatabase.addApplicationFont("assets/Antic Regular.ttf")
+        
         # Set the stylesheet
         with open('style.css', 'r') as css_file:
             self.setStyleSheet(css_file.read())
@@ -35,6 +39,9 @@ class Calculator(QMainWindow):
         
         # Storage for input boxes so it can be accessed through dictionary
         self.inputs = {}
+        
+        # Store the value of all input boxes
+        self.values = {}
         
         # Create all the widgets
         self.initUI()
@@ -60,7 +67,7 @@ class Calculator(QMainWindow):
                 self.createGradeInputs(grade, row, column)
                 
         # Calculate GPA button
-        self.calc = QtWidgets.QPushButton(self, objectName="reset_button")
+        self.calc = QtWidgets.QPushButton(self)
         self.calc.setText("Calculate GPA")
         self.calc.setCursor(QCursor(QtCore.Qt.PointingHandCursor))
         self.calc.clicked.connect(self.calculateGPA)
@@ -68,7 +75,7 @@ class Calculator(QMainWindow):
         self.calc.move(83, 570)
         
         # Reset input button
-        self.reset = QtWidgets.QPushButton(self, objectName="reset_button")
+        self.reset = QtWidgets.QPushButton(self)
         self.reset.setText("Reset Input")
         self.reset.setCursor(QCursor(QtCore.Qt.PointingHandCursor))
         self.reset.clicked.connect(self.resetInput)
@@ -80,16 +87,14 @@ class Calculator(QMainWindow):
         # Create input label
         self.label = QtWidgets.QLabel(self, objectName="input_title")
         self.label.setText(grade)
-        self.label.setFont(QFont('Verdana', 10))
         self.label.setAlignment(QtCore.Qt.AlignCenter)
         self.label.resize(252, 25)
         self.label.move(self.startingLabel_X + (row * 350), self.startingLabel_Y + (column * 115)) # Move according to the row and column
         
         # Create input box
-        self.input = QtWidgets.QLineEdit(self, objectName ="input_box")
+        self.input = QtWidgets.QLineEdit(self, objectName="input_box")
         self.input.setAlignment(QtCore.Qt.AlignCenter)
         self.input.setText("0")
-        self.input.setFont(QFont('Verdana', 16))
         self.input.resize(252, 50) 
         self.input.move(self.startingInput_X + (row * 350), self.startingInput_Y + (column * 115))  # Adjust the vertical position as needed
         
