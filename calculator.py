@@ -10,6 +10,21 @@ grades = [
     "Merit", "Excellence", "High Not Achieved",
     "High Achieved", "High Merit", "High Excellence"
 ]
+
+grade_multiplier = {
+    "Low Not Achieved" : 1,
+    "Not Achieved" : 2,
+    "High Not Achieved" : 3,
+    "Low Achieved" : 4,
+    "Achieved" : 5,
+    "High Achieved" : 6,
+    "Low Merit" : 7,
+    "Merit" : 8,
+    "High Merit" : 9,
+    "Low Excellence" : 10,
+    "Excellence" : 11,
+    "High Excellence" : 12
+}
         
 class Calculator(QMainWindow):
     def __init__(self):
@@ -39,9 +54,6 @@ class Calculator(QMainWindow):
         
         # Storage for input boxes so it can be accessed through dictionary
         self.inputs = {}
-        
-        # Store the value of all input boxes
-        self.values = {}
         
         # Create all the widgets
         self.initUI()
@@ -124,7 +136,20 @@ class Calculator(QMainWindow):
             self.inputs[grade].setText("0")
     
     def calculateGPA(self):
-        print("a")
+        self.gpa = 0
+        values = [] # Grade amount
+        
+        for grade in grades:
+            currentInputBox = self.inputs[grade]
+            currentInputValue = int(currentInputBox.text())
+            
+            if currentInputValue != 0:
+                multiplier = grade_multiplier[grade]
+                
+                value = currentInputValue * multiplier
+                values.append(value)
+            
+        self.gpa = (sum(values) / len(values))
 
 def window():
     app = QApplication(sys.argv)
