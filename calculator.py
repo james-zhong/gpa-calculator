@@ -1,5 +1,5 @@
 import sys, re
-from statistics import mean
+from math import ceil
 from PyQt5 import QtCore, QtWidgets, QtGui
 from PyQt5.QtWidgets import QApplication, QMainWindow
 from PyQt5.QtGui import QCursor, QFont
@@ -42,6 +42,10 @@ class Calculator(QMainWindow):
         with open('style.css', 'r') as css_file:
             self.setStyleSheet(css_file.read())
         
+        # GPA variables
+        self.inputs = {} # Storage for input boxes so it can be accessed through dictionary
+        self.gpa_label = None # Global variable for GPA display QLabel cause i dont know any other way to do it
+        
         # Define UI variables
         
         # Define where the coordinates of the first input label should be
@@ -52,12 +56,9 @@ class Calculator(QMainWindow):
         self.startingInput_X = self.startingLabel_X
         self.startingInput_Y = self.startingLabel_Y + 25
         
-        # Storage for input boxes so it can be accessed through dictionary
-        self.inputs = {}
-        
         # Create all the widgets
         self.initUI()
-        
+    
     # Create and add widgets  
     def initUI(self):
         # Title
@@ -93,7 +94,15 @@ class Calculator(QMainWindow):
         self.reset.clicked.connect(self.resetInput)
         self.reset.resize(252, 50)
         self.reset.move(83, 645)
-
+        
+        # GPA display
+        self.gpa_display = QtWidgets.QLabel(self, objectName="gpaDisplay")
+        self.gpa_display.setText("GPA: No Input Given")
+        self.gpa_display.setAlignment(QtCore.Qt.AlignCenter)
+        self.gpa_display.resize(602, 50)
+        self.gpa_display.move(433, 570)
+        self.gpa_label = self.gpa_display
+    
     # Function for creating a grade input and its respective label
     def createGradeInputs(self, grade, row, column):
         # Create input label
@@ -135,21 +144,43 @@ class Calculator(QMainWindow):
         for grade in grades:
             self.inputs[grade].setText("0")
     
-    def calculateGPA(self):
-        self.gpa = 0
+    def calculateGPA(self): # TODO: there has to be some way to optimise this so do that later
+        totalGradeAmount = []
         values = [] # Grade amount
         
         for grade in grades:
             currentInputBox = self.inputs[grade]
             currentInputValue = int(currentInputBox.text())
             
+            # Skip if a grade has no input
             if currentInputValue != 0:
                 multiplier = grade_multiplier[grade]
                 
+                # Get the total amount of grades
+                for _ in range(currentInputValue):
+                    totalGradeAmount.append(multiplier)
+                
+                # Use the multiplier to add 'worth'? to the grades
                 value = currentInputValue * multiplier
                 values.append(value)
-            
-        self.gpa = (sum(values) / len(values))
+        
+        # Get average (round to 2 decimal places)
+        gpa = round((sum(values) / len(totalGradeAmount)), 2)
+        
+        # TODO: there's probably an easier way to do this so find it later
+        # Get the GPA in word form
+        rounded_grade = ceil(gpa)
+        
+        for grade, value in grade_multiplier.items():
+            if value == rounded_grade:
+                rounded_grade = grade
+        
+        self.gpa_display.setText(f"GPA: {gpa} ({rounded_grade})")
+        """
+        print(f"raw {totalGradeAmount}")
+        print(f"values {values}")
+        print(self.gpa)
+        """
 
 def window():
     app = QApplication(sys.argv)

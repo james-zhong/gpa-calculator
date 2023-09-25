@@ -7,9 +7,12 @@
 }
 
 QLabel#title {
-    text-align: center;
     font-size: 25pt;
     font-family: Antic;
+}
+
+QLabel#gpaDisplay {
+    font-size: 18pt;
 }
 
 QLabel#input_title {

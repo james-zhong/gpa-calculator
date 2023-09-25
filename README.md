@@ -18,4 +18,6 @@ __**NCEA - Pilot**__
 * High Merit - Consolidating (High)  
 * Low Excellence - Excelling (Low)  
 * Excellence - Excelling  
-* High Excellence - Excelling (High)  
+* High Excellence - Excelling (High)
+
+*Note that if the calculated GPA has decimals, it will round up. For example, if a GPA is 2.75, the GPA would be rounded to 3 (High Not Achieved)*
