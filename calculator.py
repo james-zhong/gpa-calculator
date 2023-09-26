@@ -1,4 +1,4 @@
-import sys, re
+import sys, re, ctypes, time
 from math import ceil, floor
 from PyQt5 import QtCore, QtWidgets, QtGui
 from PyQt5.QtWidgets import QApplication, QMainWindow
@@ -28,20 +28,25 @@ grade_multiplier = {
         
 class Calculator(QMainWindow):
     def __init__(self):
-        
         super(Calculator, self).__init__()
 
         # Define window properties
         self.setFixedSize(1118, 750)
         self.setWindowTitle("NCEA GPA Calculator")
+        self.setWindowIcon(QtGui.QIcon("assets/images/icon.jpg")) # Window icon
         
+        # Taskbar icon - seems like using ctypes is the only option???
+        myappid = 'mycompany.myproduct.subproduct.version' 
+        ctypes.windll.shell32.SetCurrentProcessExplicitAppUserModelID(myappid)
+        time.sleep(1)
+                
         # Custom font
-        QtGui.QFontDatabase.addApplicationFont("assets/Poppins Light.ttf")
-        QtGui.QFontDatabase.addApplicationFont("assets/Antic Regular.ttf")
+        QtGui.QFontDatabase.addApplicationFont("assets/fonts/Poppins Light.ttf")
+        QtGui.QFontDatabase.addApplicationFont("assets/fonts/Antic Regular.ttf")
         
         # Set the stylesheet
-        with open('style.css', 'r') as css_file:
-            self.setStyleSheet(css_file.read())
+        with open('style.css', 'r') as css:
+            self.setStyleSheet(css.read())
         
         # GPA variables
         self.inputs = {} # Storage for input boxes so it can be accessed through dictionary
