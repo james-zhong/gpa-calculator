@@ -2,7 +2,7 @@ import sys, re
 from math import ceil, floor
 from PyQt5 import QtCore, QtWidgets, QtGui
 from PyQt5.QtWidgets import QApplication, QMainWindow
-from PyQt5.QtGui import QCursor, QFont
+from PyQt5.QtGui import QCursor
 
 grades = [
     "Low Not Achieved", "Low Achieved", "Low Merit",
@@ -109,7 +109,7 @@ class Calculator(QMainWindow):
         # Labels for calculating how much excellences/high excellences needed to get their GPA to the respective grade
         self.excellences = QtWidgets.QLabel(self)
         self.excellences.setText("For Excellence:<br> ??? Excellences required")
-        self.excellences.setAlignment(QtCore.Qt.AlignCenter)
+        self.excellences.setAlignment(QtCore.Qt.AlignTop)
         self.excellences.resize(301, 50)
         self.excellences.move(418, 645)
         self.excellences_label = self.excellences
@@ -207,23 +207,25 @@ class Calculator(QMainWindow):
                     rounded_grade = grade
             
             self.gpa_display.setText(f"GPA: {gpa} ({rounded_grade})")
+            
+                # Calculate how many Excellences and High Excellences needed for a GPA of 11 or 12 respectively
+            # Just used basic algebra to form an equation and rearranged for x in terms of len(totalGradeAmount) and sum(values)
+            if gpa < 10.5:
+                excellences_needed = ceil((21 * len(totalGradeAmount)) - (2 * sum(values)))
+                high_excellences_needed = ceil(((21 * len(totalGradeAmount)) - (2 * sum(values)))/3)
+                self.excellences_label.setText(f"For Excellence:<br>{excellences_needed} Excellences required<br>{high_excellences_needed} High Excellences Needed")
+            else:
+                self.excellences_label.setText("For Excellence:<br>Your GPA is already >= Excellence")
+
+            if gpa < 11.5:
+                high_excellences_needed = ceil((23 * len(totalGradeAmount)) - (2 * sum(values)))
+                self.high_excellences_label.setText(f"For High Excellence:<br>{high_excellences_needed} High Excellences required")
+            else:
+                self.high_excellences_label.setText("For High Excellence:<br>Your GPA is already High Excellence")
         else:
             self.gpa_display.setText("GPA: No Input Given")
             self.excellences_label.setText("For Excellence:<br> ??? Excellences required")
             self.high_excellences_label.setText("For High Excellence:<br> ??? High Excellences required")
-            
-        # Calculate how many Excellences and High Excellences needed for a GPA of 11 or 12 respectively
-        if gpa < 10.5:
-            excellences_needed = ceil(((11 * len(totalGradeAmount)) - gpa))
-            self.excellences_label.setText(f"For Excellence:<br>{excellences_needed} Excellences required")
-        else:
-            self.excellences_label.setText("For Excellence:<br>Your GPA is already >= Excellence")
-
-        if gpa < 11.5:
-            high_excellences_needed = ceil(((12 * len(totalGradeAmount)) - gpa))
-            self.high_excellences_label.setText(f"For High Excellence:<br>{high_excellences_needed} High Excellences required")
-        else:
-            self.high_excellences_label.setText("For High Excellence:<br>Your GPA is already High Excellence")
 
 def window():
     app = QApplication(sys.argv)
