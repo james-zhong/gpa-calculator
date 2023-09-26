@@ -162,14 +162,7 @@ class Calculator(QMainWindow):
             sender.setText("0")   
         elif text[0] == "0" and text != "0": # Remove the "0" in front of number when not empty
             sender.setText(text.lstrip("0"))
-        
-        """
-        # Limit the amount of characters to 4
-        if len(text) > 4:
-            sender.setText(text[:4])
-        """
 
-    # Reset the text for all input boxes (called when reset button pressed)
     def resetInput(self):
         # Reset text
         self.gpa_display.setText("GPA: No Input Given")
@@ -180,35 +173,34 @@ class Calculator(QMainWindow):
         for grade in grades:
             self.inputs[grade].setText("0")
 
-    def calculateGPA(self): # TODO: there has to be some way to optimise this so do that later
+    def calculateGPA(self):
         totalGradeAmount = 0
-        gradeWorth = 0 # Grade amount
-        
+        gradeWorth = 0
+        grades = self.inputs.keys()
+
+        # Get all the inputs to convert into grade worth and total amount of grades received
         for grade in grades:
             currentInputBox = self.inputs[grade]
+            currentInputValue = currentInputBox.text()
             
-            if currentInputBox.text():
-                currentInputValue = int(currentInputBox.text())
-            
-                # Skip if a grade has no input
+            if currentInputValue:
+                currentInputValue = int(currentInputValue)
+                multiplier = grade_multiplier[grade]
+                
                 if currentInputValue != 0:
-                    multiplier = grade_multiplier[grade]
-                    
+                    # Calculate total grades received
                     totalGradeAmount += currentInputValue
                     
-                    # Use the multiplier to add 'worth'? to the grades
+                    # Calculate grade worth
                     value = currentInputValue * multiplier
                     gradeWorth += value
         
-        # Make sure that input is given
         if totalGradeAmount != 0:
-            # Get average (round to 2 decimal places)
             gpa = round((gradeWorth / totalGradeAmount), 2)
+            rounded_grade = round(gpa)
             
-            # TODO: there's probably an easier way to do this so find it later
-            rounded_grade = gpa
-            
-            # Custom round (round up if decimal is <= 0.5 and down if > 0.5)
+            # (Is there a build in function for this???)
+            # Custom round - round up when decimal portion is >= 0.5 and round down when < 0.5
             if not gpa.is_integer():
                 decimal = gpa - int(gpa)
                 
@@ -217,29 +209,30 @@ class Calculator(QMainWindow):
                 else:
                     rounded_grade = floor(gpa)
             
+            # Get the GPA in word form and display it
             rounded_grade = next((grade for grade, value in grade_multiplier.items() if value == rounded_grade), None)
-            
             self.gpa_display.setText(f"GPA: {gpa} ({rounded_grade})")
-            
-            # Calculate how many Excellences and High Excellences needed for a GPA of 11 or 12 respectively
-            # Just used basic algebra to form an equation and rearranged for x in terms of totalGradeAmount and gradeWorth
+
+            # Calculate amount of E/High E required to raise grade to respective amount 
+            excellences_needed = ceil((21 * totalGradeAmount) - (2 * gradeWorth))
+            high_excellences_for_e = ceil(((21 * totalGradeAmount) - (2 * gradeWorth)) / 3)
+            high_excellences_needed = ceil((23 * totalGradeAmount) - (2 * gradeWorth))
+
+            # Displaying GPA requirements
             if gpa < 10.5:
-                excellences_needed = ceil((21 * totalGradeAmount) - (2 * gradeWorth))
-                high_excellences_needed = ceil(((21 * totalGradeAmount) - (2 * gradeWorth))/3)
-                self.excellences_label.setText(f"For Excellence:<br>{excellences_needed} more Excellences required<br>{high_excellences_needed} more High Excellences Needed")
+                self.excellences_label.setText(f"For Excellence:<br>{excellences_needed} more Excellences required<br>{high_excellences_for_e} more High Excellences Needed")
             else:
-                self.excellences_label.setText("For Excellence:<br>Your GPA is already >= Excellence")
+                self.excellences_label.setText("For Excellence:<br>Your GPA is already ≥ Excellence")
 
             if gpa < 11.5:
-                high_excellences_needed = ceil((23 * totalGradeAmount) - (2 * gradeWorth))
                 self.high_excellences_label.setText(f"For High Excellence:<br>{high_excellences_needed} more High Excellences required")
             else:
                 self.high_excellences_label.setText("For High Excellence:<br>Your GPA is already High Excellence")
         else:
             self.gpa_display.setText("GPA: No Input Given")
-            self.excellences_label.setText("For Excellence:<br> ??? more Excellences required<br> ??? more  High Excellences required")
+            self.excellences_label.setText("For Excellence:<br> ??? more Excellences required<br> ??? more High Excellences required")
             self.high_excellences_label.setText("For High Excellence:<br> ??? more High Excellences required")
-            
+    
 def window():
     app = QApplication(sys.argv)
     app.setStyle("Fusion")
