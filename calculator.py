@@ -5,10 +5,18 @@ from PyQt5.QtWidgets import QApplication, QMainWindow
 from PyQt5.QtGui import QCursor
 
 grades = [
-    "Low Not Achieved", "Low Achieved", "Low Merit",
-    "Low Excellence", "Not Achieved", "Achieved",
-    "Merit", "Excellence", "High Not Achieved",
-    "High Achieved", "High Merit", "High Excellence"
+    "Low Not Achieved", 
+    "Low Achieved", 
+    "Low Merit",
+    "Low Excellence", 
+    "Not Achieved", 
+    "Achieved",
+    "Merit", 
+    "Excellence", 
+    "High Not Achieved",
+    "High Achieved", 
+    "High Merit", 
+    "High Excellence"
 ]
 
 grade_multiplier = {
@@ -25,7 +33,9 @@ grade_multiplier = {
     "Excellence" : 11,
     "High Excellence" : 12
 }
-        
+
+reversed_grade_multiplier = {value: grade for grade, value, in grade_multiplier.items()}
+
 class Calculator(QMainWindow):
     def __init__(self):
         super(Calculator, self).__init__()
@@ -210,7 +220,7 @@ class Calculator(QMainWindow):
                     rounded_grade = floor(gpa)
             
             # Get the GPA in word form and display it
-            rounded_grade = next((grade for grade, value in grade_multiplier.items() if value == rounded_grade), None)
+            rounded_grade = reversed_grade_multiplier[rounded_grade]
             self.gpa_display.setText(f"GPA: {gpa} ({rounded_grade})")
 
             # Calculate amount of E/High E required to raise grade to respective amount 
