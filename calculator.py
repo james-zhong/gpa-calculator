@@ -108,14 +108,14 @@ class Calculator(QMainWindow):
         
         # Labels for calculating how much excellences/high excellences needed to get their GPA to the respective grade
         self.excellences = QtWidgets.QLabel(self)
-        self.excellences.setText("For Excellence:<br> ??? Excellences required")
-        self.excellences.setAlignment(QtCore.Qt.AlignTop)
-        self.excellences.resize(301, 50)
-        self.excellences.move(418, 645)
+        self.excellences.setText("For Excellence:<br> ??? more Excellences required <br> ??? more High Excellences required")
+        self.excellences.setAlignment(QtCore.Qt.AlignCenter)
+        self.excellences.resize(301, 100)
+        self.excellences.move(418, 620)
         self.excellences_label = self.excellences
         
         self.h_excellences = QtWidgets.QLabel(self)
-        self.h_excellences.setText("For High Excellence:<br> ??? High Excellences required")
+        self.h_excellences.setText("For High Excellence:<br> ??? more High Excellences required")
         self.h_excellences.setAlignment(QtCore.Qt.AlignCenter)
         self.h_excellences.resize(301, 50)
         self.h_excellences.move(749, 645)
@@ -213,18 +213,18 @@ class Calculator(QMainWindow):
             if gpa < 10.5:
                 excellences_needed = ceil((21 * len(totalGradeAmount)) - (2 * sum(values)))
                 high_excellences_needed = ceil(((21 * len(totalGradeAmount)) - (2 * sum(values)))/3)
-                self.excellences_label.setText(f"For Excellence:<br>{excellences_needed} Excellences required<br>{high_excellences_needed} High Excellences Needed")
+                self.excellences_label.setText(f"For Excellence:<br>{excellences_needed} more Excellences required<br>{high_excellences_needed} more High Excellences Needed")
             else:
                 self.excellences_label.setText("For Excellence:<br>Your GPA is already >= Excellence")
 
             if gpa < 11.5:
                 high_excellences_needed = ceil((23 * len(totalGradeAmount)) - (2 * sum(values)))
-                self.high_excellences_label.setText(f"For High Excellence:<br>{high_excellences_needed} High Excellences required")
+                self.high_excellences_label.setText(f"For High Excellence:<br>{high_excellences_needed} more High Excellences required")
             else:
                 self.high_excellences_label.setText("For High Excellence:<br>Your GPA is already High Excellence")
         else:
             self.gpa_display.setText("GPA: No Input Given")
-            self.excellences_label.setText("For Excellence:<br> ??? Excellences required")
+            self.excellences_label.setText("For Excellence:<br> ??? Excellences required<br> ??? High Excellences required")
             self.high_excellences_label.setText("For High Excellence:<br> ??? High Excellences required")
 
 def window():
