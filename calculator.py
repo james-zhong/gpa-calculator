@@ -181,9 +181,8 @@ class Calculator(QMainWindow):
             self.inputs[grade].setText("0")
 
     def calculateGPA(self): # TODO: there has to be some way to optimise this so do that later
-        gpa = 0
         totalGradeAmount = 0
-        values = [] # Grade amount
+        gradeWorth = 0 # Grade amount
         
         for grade in grades:
             currentInputBox = self.inputs[grade]
@@ -199,12 +198,12 @@ class Calculator(QMainWindow):
                     
                     # Use the multiplier to add 'worth'? to the grades
                     value = currentInputValue * multiplier
-                    values.append(value)
+                    gradeWorth += value
         
         # Make sure that input is given
         if totalGradeAmount != 0:
             # Get average (round to 2 decimal places)
-            gpa = round((sum(values) / totalGradeAmount), 2)
+            gpa = round((gradeWorth / totalGradeAmount), 2)
             
             # TODO: there's probably an easier way to do this so find it later
             rounded_grade = gpa
@@ -217,30 +216,22 @@ class Calculator(QMainWindow):
                     rounded_grade = ceil(gpa)
                 else:
                     rounded_grade = floor(gpa)
-            else:
-                rounded_grade = gpa
             
             rounded_grade = next((grade for grade, value in grade_multiplier.items() if value == rounded_grade), None)
-            
-            """
-            for grade, value in grade_multiplier.items():
-                if value == rounded_grade:
-                    rounded_grade = grade
-            """
             
             self.gpa_display.setText(f"GPA: {gpa} ({rounded_grade})")
             
             # Calculate how many Excellences and High Excellences needed for a GPA of 11 or 12 respectively
-            # Just used basic algebra to form an equation and rearranged for x in terms of len(totalGradeAmount) and sum(values)
+            # Just used basic algebra to form an equation and rearranged for x in terms of totalGradeAmount and gradeWorth
             if gpa < 10.5:
-                excellences_needed = ceil((21 * totalGradeAmount) - (2 * sum(values)))
-                high_excellences_needed = ceil(((21 * totalGradeAmount) - (2 * sum(values)))/3)
+                excellences_needed = ceil((21 * totalGradeAmount) - (2 * gradeWorth))
+                high_excellences_needed = ceil(((21 * totalGradeAmount) - (2 * gradeWorth))/3)
                 self.excellences_label.setText(f"For Excellence:<br>{excellences_needed} more Excellences required<br>{high_excellences_needed} more High Excellences Needed")
             else:
                 self.excellences_label.setText("For Excellence:<br>Your GPA is already >= Excellence")
 
             if gpa < 11.5:
-                high_excellences_needed = ceil((23 * totalGradeAmount) - (2 * sum(values)))
+                high_excellences_needed = ceil((23 * totalGradeAmount) - (2 * gradeWorth))
                 self.high_excellences_label.setText(f"For High Excellence:<br>{high_excellences_needed} more High Excellences required")
             else:
                 self.high_excellences_label.setText("For High Excellence:<br>Your GPA is already High Excellence")
