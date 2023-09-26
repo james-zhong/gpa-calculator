@@ -28,6 +28,7 @@ grade_multiplier = {
         
 class Calculator(QMainWindow):
     def __init__(self):
+        
         super(Calculator, self).__init__()
 
         # Define window properties
@@ -61,7 +62,6 @@ class Calculator(QMainWindow):
         
         # Create all the widgets
         self.initUI()
-    
     # Create and add widgets  
     def initUI(self):
         # Title
@@ -159,9 +159,15 @@ class Calculator(QMainWindow):
 
     # Reset the text for all input boxes (called when reset button pressed)
     def resetInput(self):
+        # Reset text
+        self.gpa_display.setText("GPA: No Input Given")
+        self.excellences.setText("For Excellence:<br> ??? more Excellences required <br> ??? more High Excellences required")
+        self.h_excellences.setText("For High Excellence:<br> ??? more High Excellences required")
+        
+        # Reset inputs
         for grade in grades:
             self.inputs[grade].setText("0")
-    
+
     def calculateGPA(self): # TODO: there has to be some way to optimise this so do that later
         gpa = 0
         totalGradeAmount = []
@@ -208,7 +214,7 @@ class Calculator(QMainWindow):
             
             self.gpa_display.setText(f"GPA: {gpa} ({rounded_grade})")
             
-                # Calculate how many Excellences and High Excellences needed for a GPA of 11 or 12 respectively
+            # Calculate how many Excellences and High Excellences needed for a GPA of 11 or 12 respectively
             # Just used basic algebra to form an equation and rearranged for x in terms of len(totalGradeAmount) and sum(values)
             if gpa < 10.5:
                 excellences_needed = ceil((21 * len(totalGradeAmount)) - (2 * sum(values)))
@@ -224,9 +230,9 @@ class Calculator(QMainWindow):
                 self.high_excellences_label.setText("For High Excellence:<br>Your GPA is already High Excellence")
         else:
             self.gpa_display.setText("GPA: No Input Given")
-            self.excellences_label.setText("For Excellence:<br> ??? Excellences required<br> ??? High Excellences required")
-            self.high_excellences_label.setText("For High Excellence:<br> ??? High Excellences required")
-
+            self.excellences_label.setText("For Excellence:<br> ??? more Excellences required<br> ??? more  High Excellences required")
+            self.high_excellences_label.setText("For High Excellence:<br> ??? more High Excellences required")
+            
 def window():
     app = QApplication(sys.argv)
     app.setStyle("Fusion")
