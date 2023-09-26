@@ -36,7 +36,7 @@ class Calculator(QMainWindow):
         self.setWindowIcon(QtGui.QIcon("assets/images/icon.jpg")) # Window icon
         
         # Taskbar icon - seems like using ctypes is the only option???
-        myappid = 'mycompany.myproduct.subproduct.version' 
+        myappid = u'mycompany.myproduct.subproduct.version'
         ctypes.windll.shell32.SetCurrentProcessExplicitAppUserModelID(myappid)
         time.sleep(1)
                 
@@ -86,14 +86,6 @@ class Calculator(QMainWindow):
                 grade = grades[index]
                 
                 self.createGradeInputs(grade, row, column)
-                
-        # Calculate GPA button
-        self.calc = QtWidgets.QPushButton(self)
-        self.calc.setText("Calculate GPA")
-        self.calc.setCursor(QCursor(QtCore.Qt.PointingHandCursor))
-        self.calc.clicked.connect(self.calculateGPA)
-        self.calc.resize(252, 50)
-        self.calc.move(83, 570)
         
         # Reset input button
         self.reset = QtWidgets.QPushButton(self)
@@ -101,7 +93,14 @@ class Calculator(QMainWindow):
         self.reset.setCursor(QCursor(QtCore.Qt.PointingHandCursor))
         self.reset.clicked.connect(self.resetInput)
         self.reset.resize(252, 50)
-        self.reset.move(83, 645)
+        self.reset.move(83, 570)
+        
+        # Help button
+        self.calc = QtWidgets.QPushButton(self)
+        self.calc.setText("Help")
+        self.calc.setCursor(QCursor(QtCore.Qt.PointingHandCursor))
+        self.calc.resize(252, 50)
+        self.calc.move(83, 645)
         
         # GPA display
         self.gpa_display = QtWidgets.QLabel(self, objectName="gpaDisplay")
@@ -115,15 +114,15 @@ class Calculator(QMainWindow):
         self.excellences = QtWidgets.QLabel(self)
         self.excellences.setText("For Excellence:<br> ??? more Excellences required <br> ??? more High Excellences required")
         self.excellences.setAlignment(QtCore.Qt.AlignCenter)
-        self.excellences.resize(301, 100)
-        self.excellences.move(418, 620)
+        self.excellences.resize(311, 100)
+        self.excellences.move(398, 620)
         self.excellences_label = self.excellences
         
         self.h_excellences = QtWidgets.QLabel(self)
         self.h_excellences.setText("For High Excellence:<br> ??? more High Excellences required")
         self.h_excellences.setAlignment(QtCore.Qt.AlignCenter)
-        self.h_excellences.resize(301, 50)
-        self.h_excellences.move(749, 645)
+        self.h_excellences.resize(311, 50)
+        self.h_excellences.move(769, 645)
         self.high_excellences_label = self.h_excellences
     
     # Function for creating a grade input and its respective label
@@ -149,6 +148,8 @@ class Calculator(QMainWindow):
         self.input.textChanged.connect(self.onInputTextChanged)
     
     def onInputTextChanged(self):
+        self.calculateGPA() # Calculate GPA
+        
         sender = self.sender() # Widget that changed text
         text = sender.text()
         
@@ -161,6 +162,12 @@ class Calculator(QMainWindow):
             sender.setText("0")   
         elif text[0] == "0" and text != "0": # Remove the "0" in front of number when not empty
             sender.setText(text.lstrip("0"))
+        
+        """
+        # Limit the amount of characters to 4
+        if len(text) > 4:
+            sender.setText(text[:4])
+        """
 
     # Reset the text for all input boxes (called when reset button pressed)
     def resetInput(self):
@@ -175,29 +182,29 @@ class Calculator(QMainWindow):
 
     def calculateGPA(self): # TODO: there has to be some way to optimise this so do that later
         gpa = 0
-        totalGradeAmount = []
+        totalGradeAmount = 0
         values = [] # Grade amount
         
         for grade in grades:
             currentInputBox = self.inputs[grade]
-            currentInputValue = int(currentInputBox.text())
             
-            # Skip if a grade has no input
-            if currentInputValue != 0:
-                multiplier = grade_multiplier[grade]
-                
-                # Get the total amount of grades
-                for _ in range(currentInputValue):
-                    totalGradeAmount.append(multiplier)
-                
-                # Use the multiplier to add 'worth'? to the grades
-                value = currentInputValue * multiplier
-                values.append(value)
+            if currentInputBox.text():
+                currentInputValue = int(currentInputBox.text())
+            
+                # Skip if a grade has no input
+                if currentInputValue != 0:
+                    multiplier = grade_multiplier[grade]
+                    
+                    totalGradeAmount += currentInputValue
+                    
+                    # Use the multiplier to add 'worth'? to the grades
+                    value = currentInputValue * multiplier
+                    values.append(value)
         
         # Make sure that input is given
-        if len(totalGradeAmount) != 0:
+        if totalGradeAmount != 0:
             # Get average (round to 2 decimal places)
-            gpa = round((sum(values) / len(totalGradeAmount)), 2)
+            gpa = round((sum(values) / totalGradeAmount), 2)
             
             # TODO: there's probably an easier way to do this so find it later
             rounded_grade = gpa
@@ -213,23 +220,27 @@ class Calculator(QMainWindow):
             else:
                 rounded_grade = gpa
             
+            rounded_grade = next((grade for grade, value in grade_multiplier.items() if value == rounded_grade), None)
+            
+            """
             for grade, value in grade_multiplier.items():
                 if value == rounded_grade:
                     rounded_grade = grade
+            """
             
             self.gpa_display.setText(f"GPA: {gpa} ({rounded_grade})")
             
             # Calculate how many Excellences and High Excellences needed for a GPA of 11 or 12 respectively
             # Just used basic algebra to form an equation and rearranged for x in terms of len(totalGradeAmount) and sum(values)
             if gpa < 10.5:
-                excellences_needed = ceil((21 * len(totalGradeAmount)) - (2 * sum(values)))
-                high_excellences_needed = ceil(((21 * len(totalGradeAmount)) - (2 * sum(values)))/3)
+                excellences_needed = ceil((21 * totalGradeAmount) - (2 * sum(values)))
+                high_excellences_needed = ceil(((21 * totalGradeAmount) - (2 * sum(values)))/3)
                 self.excellences_label.setText(f"For Excellence:<br>{excellences_needed} more Excellences required<br>{high_excellences_needed} more High Excellences Needed")
             else:
                 self.excellences_label.setText("For Excellence:<br>Your GPA is already >= Excellence")
 
             if gpa < 11.5:
-                high_excellences_needed = ceil((23 * len(totalGradeAmount)) - (2 * sum(values)))
+                high_excellences_needed = ceil((23 * totalGradeAmount) - (2 * sum(values)))
                 self.high_excellences_label.setText(f"For High Excellence:<br>{high_excellences_needed} more High Excellences required")
             else:
                 self.high_excellences_label.setText("For High Excellence:<br>Your GPA is already High Excellence")
