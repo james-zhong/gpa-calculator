@@ -277,6 +277,7 @@ class Calculator(QMainWindow):
     def save(self):
         try:
             with open("assets/save/data.vault", "wb") as file:
+                # Convert data to be saved into strings (pickle cannot serialize QLineEdit)
                 data = {grade: self.inputs[grade].text() for grade in grades}
                 pickle.dump(data, file)
                 
