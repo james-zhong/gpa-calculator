@@ -35,3 +35,20 @@ QPushButton:hover {
     background-color: #2cde85;
     border: 5px solid white;
 }
+
+QPushButton#save {
+    background-color: #2cde85;
+    border: 5px solid white;
+    border-image: url(assets/images/save.png);
+}
+
+QPushButton#load {
+    background-color: #2cde85;
+    border: 5px solid white;
+    border-image: url(assets/images/load.png);
+}
+
+QPushButton#save:hover, #load:hover {
+    background-color: white;
+    border: 5px solid #2cde85;
+}

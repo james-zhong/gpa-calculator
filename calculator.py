@@ -1,8 +1,8 @@
-import sys, re, ctypes, time
+import sys, re, ctypes, time, pickle
 from math import ceil, floor
 from PyQt5 import QtCore, QtWidgets, QtGui
 from PyQt5.QtWidgets import QApplication, QMainWindow
-from PyQt5.QtGui import QCursor
+from PyQt5.QtGui import QCursor, QIcon
 
 grades = [
     "Low Not Achieved", 
@@ -59,17 +59,22 @@ class Calculator(QMainWindow):
             self.setStyleSheet(css.read())
         
         # GPA variables
-        self.inputs = {} # Storage for input boxes so it can be accessed through dictionary
+        
+        # Try loading from save
+        
+        self.inputs = {}
         
         # Global variables for QLabel so it can be accessed in another function (idk if there's a better way to do it but it works so yes)
         self.gpa_label = None
         self.excellences_label = None
         self.high_excellences_label = None
+        self.save_outcome = None
+        self.load_outcome = None
         
         # Define UI variables
         # Define where the coordinates of the first input label should be
         self.startingLabel_X = 83
-        self.startingLabel_Y = 100
+        self.startingLabel_Y = 115
         
         # Define where the coordinates of the first input box should be
         self.startingInput_X = self.startingLabel_X
@@ -77,6 +82,7 @@ class Calculator(QMainWindow):
         
         # Create all the widgets
         self.initUI()
+        
     # Create and add widgets  
     def initUI(self):
         # Title
@@ -134,6 +140,31 @@ class Calculator(QMainWindow):
         self.h_excellences.resize(311, 50)
         self.h_excellences.move(769, 645)
         self.high_excellences_label = self.h_excellences
+        
+        # Save data load
+        self.save_label = QtWidgets.QLabel(self)
+        self.save_label.resize(275, 50)
+        self.save_label.move(50, 0)
+        self.save_outcome = self.save_label
+        
+        # Load data outcome
+        self.load_label = QtWidgets.QLabel(self)
+        self.load_label.resize(275, 50)
+        self.load_label.move(50, 55)
+        self.load_outcome = self.load_label
+        
+        # Save data button
+        self.save_button = QtWidgets.QPushButton(self, objectName="save")
+        self.save_button.setCursor(QCursor(QtCore.Qt.PointingHandCursor))
+        self.save_button.clicked.connect(self.save)
+        self.save_button.resize(50, 50)
+        
+        # Load data button
+        self.load_button = QtWidgets.QPushButton(self, objectName="load")
+        self.load_button.setCursor(QCursor(QtCore.Qt.PointingHandCursor))
+        self.load_button.clicked.connect(self.load)
+        self.load_button.resize(50, 50)
+        self.load_button.move(0, 55)
     
     # Function for creating a grade input and its respective label
     def createGradeInputs(self, grade, row, column):
@@ -209,7 +240,7 @@ class Calculator(QMainWindow):
             gpa = round((gradeWorth / totalGradeAmount), 2)
             rounded_grade = round(gpa)
             
-            # (Is there a build in function for this???)
+            # (Is there a built in function for this???)
             # Custom round - round up when decimal portion is >= 0.5 and round down when < 0.5
             if not gpa.is_integer():
                 decimal = gpa - int(gpa)
@@ -243,6 +274,30 @@ class Calculator(QMainWindow):
             self.excellences_label.setText("For Excellence:<br> ??? more Excellences required<br> ??? more High Excellences required")
             self.high_excellences_label.setText("For High Excellence:<br> ??? more High Excellences required")
     
+    def save(self):
+        try:
+            with open("assets/save/data.vault", "wb") as file:
+                data = {grade: self.inputs[grade].text() for grade in grades}
+                pickle.dump(data, file)
+                
+            self.save_outcome.setText("Saved successfully")
+        except:
+            self.save_outcome.setText("Could not save")
+
+    def load(self):
+        try:
+            with open("assets/save/data.vault", "rb") as file:
+                self.values = dict(pickle.load(file))
+                
+                # Change all the input to last save
+                for grade in grades:
+                    self.inputs[grade].setText(self.values[grade])
+                
+                # Display outcome
+                self.load_outcome.setText("Loaded last saved data")
+        except:
+            self.load_outcome.setText("Did not load. Save does not exist")
+
 def window():
     app = QApplication(sys.argv)
     app.setStyle("Fusion")
@@ -250,6 +305,6 @@ def window():
     win.show() # Show all the widgets applied to the window
     sys.exit(app.exec_()) # Close application when the X is pressed
     
-# Run if ran from a script and not a library
+# Run if ran from this script
 if __name__ == "__main__":
     window()
