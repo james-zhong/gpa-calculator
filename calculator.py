@@ -1,8 +1,8 @@
-import sys, re, ctypes, time, pickle
+import sys, re, ctypes, time, pickle, help
 from math import ceil, floor
 from PyQt5 import QtCore, QtWidgets, QtGui
 from PyQt5.QtWidgets import QApplication, QMainWindow
-from PyQt5.QtGui import QCursor, QIcon
+from PyQt5.QtGui import QCursor
 
 grades = [
     "Low Not Achieved", 
@@ -55,7 +55,7 @@ class Calculator(QMainWindow):
         QtGui.QFontDatabase.addApplicationFont("assets/fonts/Antic Regular.ttf")
         
         # Set the stylesheet
-        with open('style.css', 'r') as css:
+        with open('assets/styles/style_main.css', 'r') as css:
             self.setStyleSheet(css.read())
         
         # GPA variables
@@ -82,7 +82,7 @@ class Calculator(QMainWindow):
         
         # Create all the widgets
         self.initUI()
-        
+    
     # Create and add widgets  
     def initUI(self):
         # Title
@@ -112,11 +112,12 @@ class Calculator(QMainWindow):
         self.reset.move(83, 570)
         
         # Help button
-        self.calc = QtWidgets.QPushButton(self)
-        self.calc.setText("Help")
-        self.calc.setCursor(QCursor(QtCore.Qt.PointingHandCursor))
-        self.calc.resize(252, 50)
-        self.calc.move(83, 645)
+        self.help_button = QtWidgets.QPushButton(self)
+        self.help_button.setText("Help")
+        self.help_button.setCursor(QCursor(QtCore.Qt.PointingHandCursor))
+        self.help_button.clicked.connect(self.showHelpWindow)
+        self.help_button.resize(252, 50)
+        self.help_button.move(83, 645)
         
         # GPA display
         self.gpa_display = QtWidgets.QLabel(self, objectName="gpaDisplay")
@@ -141,7 +142,7 @@ class Calculator(QMainWindow):
         self.h_excellences.move(769, 645)
         self.high_excellences_label = self.h_excellences
         
-        # Save data load
+        # Save data outcome
         self.save_label = QtWidgets.QLabel(self)
         self.save_label.resize(275, 50)
         self.save_label.move(50, 0)
@@ -163,6 +164,7 @@ class Calculator(QMainWindow):
         self.load_button = QtWidgets.QPushButton(self, objectName="load")
         self.load_button.setCursor(QCursor(QtCore.Qt.PointingHandCursor))
         self.load_button.clicked.connect(self.load)
+        
         self.load_button.resize(50, 50)
         self.load_button.move(0, 55)
     
@@ -273,7 +275,12 @@ class Calculator(QMainWindow):
             self.gpa_display.setText("GPA: No Input Given")
             self.excellences_label.setText("For Excellence:<br> ??? more Excellences required<br> ??? more High Excellences required")
             self.high_excellences_label.setText("For High Excellence:<br> ??? more High Excellences required")
-    
+
+    def showHelpWindow(self):
+        self.helpWindow = help.Manual()
+        self.helpWindow.show()
+
+    # Loading and saving data functions
     def save(self):
         try:
             with open("assets/save/data.vault", "wb") as file:
@@ -284,6 +291,10 @@ class Calculator(QMainWindow):
             self.save_outcome.setText("Saved successfully")
         except:
             self.save_outcome.setText("Could not save")
+        
+        timer = QtCore.QTimer(self)
+        timer.timeout.connect(lambda: self.save_outcome.setText(""))
+        timer.start(1250)
 
     def load(self):
         try:
@@ -298,6 +309,11 @@ class Calculator(QMainWindow):
                 self.load_outcome.setText("Loaded last saved data")
         except:
             self.load_outcome.setText("Did not load. Save does not exist")
+        
+        
+        timer = QtCore.QTimer(self)
+        timer.timeout.connect(lambda: self.load_outcome.setText(""))
+        timer.start(1250)
 
 def window():
     app = QApplication(sys.argv)

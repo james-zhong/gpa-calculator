@@ -45,6 +45,7 @@ QPushButton#save {
 QPushButton#load {
     background-color: #2cde85;
     border: 5px solid white;
+    padding: 5px;
     border-image: url(assets/images/load.png);
 }
 
