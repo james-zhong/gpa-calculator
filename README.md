@@ -21,4 +21,4 @@ __**NCEA - Pilot**__
 * High Excellence - Excelling (High)  
 To my knowledge, grades for formatives do *not* count towards GPA.
 
-*Note that if the calculated GPA has decimals, it will round up if decimal is greater or equal to 0.5 and round down if the decimal part is less than 0.5. For example, if a GPA is 2.75, the GPA would be rounded to 3 (High Not Achieved). If a GPA is 8.54, it would be rounded to 9 (High Merit)*
+*Note that if the calculated GPA has decimals, it will round up if decimal is greater or equal to 0.5 and round down if the decimal part is less than 0.5. For example, if a GPA is 2.75 (Not Achieved), the GPA would be rounded to 3 (High Not Achieved). If a GPA is 8.54 (Merit), it would be rounded to 9 (High Merit). Similarly, if a GPA is 11.2 (Excellence), it would round down to 11 (Excellence)*
