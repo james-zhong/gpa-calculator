@@ -120,7 +120,7 @@ class Calculator(QMainWindow):
         self.help_button.move(83, 645)
         
         # GPA display
-        self.gpa_display = QtWidgets.QLabel(self, objectName="gpaDisplay")
+        self.gpa_display = QtWidgets.QLabel(self, objectName="gpa_display")
         self.gpa_display.setText("GPA: No Input Given")
         self.gpa_display.setAlignment(QtCore.Qt.AlignCenter)
         self.gpa_display.resize(602, 50)
@@ -321,7 +321,7 @@ def window():
     win = Calculator()
     win.show() # Show all the widgets applied to the window
     sys.exit(app.exec_()) # Close application when the X is pressed
-    
+
 # Run if ran from this script
 if __name__ == "__main__":
     window()

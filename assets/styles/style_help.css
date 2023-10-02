@@ -5,3 +5,16 @@
     color: #f8f8f2;
     font-family: Poppins;
 }
+
+QLabel#header {
+    font-size: 24pt;
+    font-family: Antic;
+}
+
+QLabel#section_title {
+    font-size: 14pt;
+}
+
+QPushButton#turn_button, QLabel#page_display {
+    font-size: 16pt;
+}
