@@ -2,7 +2,7 @@ import ctypes, time, help_text
 from PyQt5 import QtCore, QtWidgets, QtGui
 from PyQt5.QtWidgets import QMainWindow
 
-# UI for different pages
+# Chaning UI content for different pages
 def page_1(self):
     self.page_title.setText("<u>Overview</u>")
     self.page_desc.setText(help_text.overview_desc)
@@ -57,7 +57,6 @@ class Manual(QMainWindow):
         self.total_pages = 4
         
         # Global variable for the page display QLabel
-        self.page_count_display = None
         
     def init_ui(self):
         # Title
@@ -67,20 +66,22 @@ class Manual(QMainWindow):
         self.header.resize(750, 100)
         
         # Page navigation
+        # Display page progress
         self.page_display = QtWidgets.QLabel(self, objectName="page_display")
         self.page_display.setText("1 / 4")
         self.page_display.setAlignment(QtCore.Qt.AlignCenter)
         self.page_display.resize(200, 50)
         self.page_display.move(275, 500)
-        self.page_count_display = self.page_display
         
+        # Go to previous page button
         self.go_back = QtWidgets.QPushButton(self, objectName="turn_button")
         self.go_back.setText("<")
         self.go_back.setFlat(True)
-        self.go_back.clicked.connect(lambda: self.changePage("back"))
+        self.go_back.clicked.connect(lambda: self.change_page("back"))
         self.go_back.resize(50, 50)
         self.go_back.move(225, 500)
         
+        # Go to next page button
         self.go_next = QtWidgets.QPushButton(self, objectName="turn_button")
         self.go_next.setText(">")
         self.go_next.setFlat(True)
@@ -88,7 +89,7 @@ class Manual(QMainWindow):
         self.go_next.resize(50, 50)
         self.go_next.move(475, 500)
         
-        # Page set up
+        # Page set up for empty title and description which will be changed in different pages
         self.page_title = QtWidgets.QLabel(self, objectName="section_title")
         self.page_title.setAlignment(QtCore.Qt.AlignCenter)
         self.page_title.resize(175, 50)
@@ -98,10 +99,6 @@ class Manual(QMainWindow):
         self.page_desc.setWordWrap(True)
         self.page_desc.resize(700, 350)
         self.page_desc.move(25, 140)
-        
-        # Page tracking variables
-        self.total_pages = 4
-        self.current_page = 1
         
         # Change the UI to the respective UI on current page
         page_functions[self.current_page](self)

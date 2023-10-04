@@ -59,17 +59,7 @@ class Calculator(QMainWindow):
             self.setStyleSheet(css.read())
         
         # GPA variables
-        
-        # Try loading from save
-        
         self.inputs = {}
-        
-        # Global variables for QLabel so it can be accessed in another function (idk if there's a better way to do it but it works so yes)
-        self.gpa_label = None
-        self.excellences_label = None
-        self.high_excellences_label = None
-        self.save_outcome = None
-        self.load_outcome = None
         
         # Define UI variables
         # Define where the coordinates of the first input label should be
@@ -125,7 +115,6 @@ class Calculator(QMainWindow):
         self.gpa_display.setAlignment(QtCore.Qt.AlignCenter)
         self.gpa_display.resize(602, 50)
         self.gpa_display.move(433, 570)
-        self.gpa_label = self.gpa_display
         
         # Labels for calculating how much excellences/high excellences needed to get their GPA to the respective grade
         self.excellences = QtWidgets.QLabel(self)
@@ -133,20 +122,17 @@ class Calculator(QMainWindow):
         self.excellences.setAlignment(QtCore.Qt.AlignCenter)
         self.excellences.resize(311, 100)
         self.excellences.move(398, 620)
-        self.excellences_label = self.excellences
         
         self.h_excellences = QtWidgets.QLabel(self)
         self.h_excellences.setText("For High Excellence:<br> ??? more High Excellences required")
         self.h_excellences.setAlignment(QtCore.Qt.AlignCenter)
         self.h_excellences.resize(311, 50)
         self.h_excellences.move(769, 645)
-        self.high_excellences_label = self.h_excellences
         
         # Save data outcome
         self.save_label = QtWidgets.QLabel(self)
         self.save_label.resize(275, 50)
         self.save_label.move(50, 0)
-        self.save_outcome = self.save_label
         
         # Load data outcome
         self.load_label = QtWidgets.QLabel(self)
@@ -263,18 +249,18 @@ class Calculator(QMainWindow):
 
             # Displaying GPA requirements
             if gpa < 10.5:
-                self.excellences_label.setText(f"For Excellence:<br>{excellences_needed} more Excellences required<br>{high_excellences_for_e} more High Excellences Needed")
+                self.excellences.setText(f"For Excellence:<br>{excellences_needed} more Excellences required<br>{high_excellences_for_e} more High Excellences Needed")
             else:
-                self.excellences_label.setText("For Excellence:<br>Your GPA is already ≥ Excellence")
+                self.excellences.setText("For Excellence:<br>Your GPA is already ≥ Excellence")
 
             if gpa < 11.5:
-                self.high_excellences_label.setText(f"For High Excellence:<br>{high_excellences_needed} more High Excellences required")
+                self.h_excellences.setText(f"For High Excellence:<br>{high_excellences_needed} more High Excellences required")
             else:
-                self.high_excellences_label.setText("For High Excellence:<br>Your GPA is already High Excellence")
+                self.h_excellences.setText("For High Excellence:<br>Your GPA is already High Excellence")
         else:
             self.gpa_display.setText("GPA: No Input Given")
-            self.excellences_label.setText("For Excellence:<br> ??? more Excellences required<br> ??? more High Excellences required")
-            self.high_excellences_label.setText("For High Excellence:<br> ??? more High Excellences required")
+            self.excellences.setText("For Excellence:<br> ??? more Excellences required<br> ??? more High Excellences required")
+            self.h_excellences.setText("For High Excellence:<br> ??? more High Excellences required")
 
     def show_help_window(self):
         self.helpWindow = help.Manual()
@@ -288,12 +274,12 @@ class Calculator(QMainWindow):
                 data = {grade: self.inputs[grade].text() for grade in grades}
                 pickle.dump(data, file)
                 
-            self.save_outcome.setText("Saved successfully")
+            self.save_label.setText("Saved successfully")
         except:
-            self.save_outcome.setText("Could not save")
+            self.save_label.setText("Could not save")
         
         timer = QtCore.QTimer(self)
-        timer.timeout.connect(lambda: self.save_outcome.setText(""))
+        timer.timeout.connect(lambda: self.save_label.setText(""))
         timer.start(1250)
 
     def load(self):
@@ -306,13 +292,13 @@ class Calculator(QMainWindow):
                     self.inputs[grade].setText(self.values[grade])
                 
                 # Display outcome
-                self.load_outcome.setText("Loaded last saved data")
+                self.load_label.setText("Loaded last saved data")
         except:
-            self.load_outcome.setText("Did not load. Save does not exist")
+            self.load_label.setText("Error in loading. Does save exist?")
         
         
         timer = QtCore.QTimer(self)
-        timer.timeout.connect(lambda: self.load_outcome.setText(""))
+        timer.timeout.connect(lambda: self.load_label.setText(""))
         timer.start(1250)
 
 def window():
