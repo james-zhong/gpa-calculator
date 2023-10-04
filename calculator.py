@@ -39,7 +39,7 @@ reversed_grade_multiplier = {value: grade for grade, value, in grade_multiplier.
 class Calculator(QMainWindow):
     def __init__(self):
         super(Calculator, self).__init__()
-
+        
         # Define window properties
         self.setFixedSize(1118, 750)
         self.setWindowTitle("NCEA GPA Calculator")
@@ -81,10 +81,10 @@ class Calculator(QMainWindow):
         self.startingInput_Y = self.startingLabel_Y + 25
         
         # Create all the widgets
-        self.initUI()
+        self.init_ui()
     
     # Create and add widgets  
-    def initUI(self):
+    def init_ui(self):
         # Title
         self.header = QtWidgets.QLabel(self, objectName="title")
         self.header.setText("NCEA GPA Calculator")
@@ -101,13 +101,13 @@ class Calculator(QMainWindow):
                 index = row * 4 + column
                 grade = grades[index]
                 
-                self.createGradeInputs(grade, row, column)
+                self.create_grade_input(grade, row, column)
         
         # Reset input button
         self.reset = QtWidgets.QPushButton(self)
         self.reset.setText("Reset Input")
         self.reset.setCursor(QCursor(QtCore.Qt.PointingHandCursor))
-        self.reset.clicked.connect(self.resetInput)
+        self.reset.clicked.connect(self.reset_input)
         self.reset.resize(252, 50)
         self.reset.move(83, 570)
         
@@ -115,7 +115,7 @@ class Calculator(QMainWindow):
         self.help_button = QtWidgets.QPushButton(self)
         self.help_button.setText("Help")
         self.help_button.setCursor(QCursor(QtCore.Qt.PointingHandCursor))
-        self.help_button.clicked.connect(self.showHelpWindow)
+        self.help_button.clicked.connect(self.show_help_window)
         self.help_button.resize(252, 50)
         self.help_button.move(83, 645)
         
@@ -169,7 +169,7 @@ class Calculator(QMainWindow):
         self.load_button.move(0, 55)
     
     # Function for creating a grade input and its respective label
-    def createGradeInputs(self, grade, row, column):
+    def create_grade_input(self, grade, row, column):
         # Create input label
         self.label = QtWidgets.QLabel(self, objectName="input_title")
         self.label.setText(grade)
@@ -188,10 +188,10 @@ class Calculator(QMainWindow):
         self.inputs[grade] = self.input
         
         # Check when text gets changed in input box
-        self.input.textChanged.connect(self.onInputTextChanged)
+        self.input.textChanged.connect(self.input_text_changed)
     
-    def onInputTextChanged(self):
-        self.calculateGPA() # Calculate GPA
+    def input_text_changed(self):
+        self.calculate_gpa() # Calculate GPA
         
         sender = self.sender() # Widget that changed text
         text = sender.text()
@@ -206,7 +206,7 @@ class Calculator(QMainWindow):
         elif text[0] == "0" and text != "0": # Remove the "0" in front of number when not empty
             sender.setText(text.lstrip("0"))
 
-    def resetInput(self):
+    def reset_input(self):
         # Reset text
         self.gpa_display.setText("GPA: No Input Given")
         self.excellences.setText("For Excellence:<br> ??? more Excellences required <br> ??? more High Excellences required")
@@ -216,7 +216,7 @@ class Calculator(QMainWindow):
         for grade in grades:
             self.inputs[grade].setText("0")
 
-    def calculateGPA(self):
+    def calculate_gpa(self):
         totalGradeAmount = 0
         gradeWorth = 0
         grades = self.inputs.keys()
@@ -276,7 +276,7 @@ class Calculator(QMainWindow):
             self.excellences_label.setText("For Excellence:<br> ??? more Excellences required<br> ??? more High Excellences required")
             self.high_excellences_label.setText("For High Excellence:<br> ??? more High Excellences required")
 
-    def showHelpWindow(self):
+    def show_help_window(self):
         self.helpWindow = help.Manual()
         self.helpWindow.show()
 
