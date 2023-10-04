@@ -48,15 +48,13 @@ class Manual(QMainWindow):
         # Set the stylesheet
         with open('assets/styles/style_help.css', 'r') as css:
             self.setStyleSheet(css.read())
-            
-        # Draw all widgets
-        self.init_ui()
         
         # Page tracking variables
         self.current_page = 1
         self.total_pages = 4
         
-        # Global variable for the page display QLabel
+        # Draw all widgets
+        self.init_ui()
         
     def init_ui(self):
         # Title
