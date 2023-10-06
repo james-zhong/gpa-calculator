@@ -2,7 +2,7 @@ import ctypes, time, help_text
 from PyQt5 import QtCore, QtWidgets, QtGui
 from PyQt5.QtWidgets import QMainWindow
 
-# Chaning UI content for different pages
+# Changing UI content for different pages
 def page_1(self):
     self.page_title.setText("<u>Overview</u>")
     self.page_desc.setText(help_text.overview_desc)
@@ -16,21 +16,25 @@ def page_3(self):
     self.page_desc.setText(help_text.ui_desc)
 
 def page_4(self):
+    self.page_title.setText("<u>Conversion</u>")
+    self.page_desc.setText(help_text.conversion_desc)
+
+def page_5(self):
     self.page_title.setText("<u>Credits</u>")
     self.page_desc.setText(help_text.credits_desc)
 
-# Dictionary to map current page number
+# Dictionary to map current page number to respective function to change text content
 page_functions = {
     1: page_1,
     2: page_2,
     3: page_3,
-    4: page_4
+    4: page_4,
+    5: page_5,
 }
 
 class Manual(QMainWindow):
-    def __init__(self):
-        super(Manual, self).__init__()
-        
+    def __init__(self, parent=None):
+        super().__init__(parent)
         # Define window properties
         self.setFixedSize(750, 600)
         self.setWindowTitle("Users Manual")
@@ -51,7 +55,7 @@ class Manual(QMainWindow):
         
         # Page tracking variables
         self.current_page = 1
-        self.total_pages = 4
+        self.total_pages = 5
         
         # Draw all widgets
         self.init_ui()
@@ -66,7 +70,7 @@ class Manual(QMainWindow):
         # Page navigation
         # Display page progress
         self.page_display = QtWidgets.QLabel(self, objectName="page_display")
-        self.page_display.setText("1 / 4")
+        self.page_display.setText(f"1 / {self.total_pages}")
         self.page_display.setAlignment(QtCore.Qt.AlignCenter)
         self.page_display.resize(200, 50)
         self.page_display.move(275, 500)
@@ -111,3 +115,8 @@ class Manual(QMainWindow):
         # Update text of the page display
         self.page_display.setText(f"{self.current_page} / {self.total_pages}")
         page_functions[self.current_page](self)
+    
+    def closeEvent(self, event):
+        # Re-enable the button in the main window when the new window is closed
+        self.parent().help_button.setEnabled(True)
+        super().closeEvent(event)

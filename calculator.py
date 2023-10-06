@@ -263,7 +263,9 @@ class Calculator(QMainWindow):
             self.h_excellences.setText("For High Excellence:<br> ??? more High Excellences required")
 
     def show_help_window(self):
-        self.helpWindow = help.Manual()
+        # Make sure window can only be opened once at a time
+        self.help_button.setEnabled(False)
+        self.helpWindow = help.Manual(self)
         self.helpWindow.show()
 
     # Loading and saving data functions
@@ -278,6 +280,7 @@ class Calculator(QMainWindow):
         except:
             self.save_label.setText("Could not save")
         
+        # Remove outcome text after 1.25s
         timer = QtCore.QTimer(self)
         timer.timeout.connect(lambda: self.save_label.setText(""))
         timer.start(1250)
@@ -296,7 +299,7 @@ class Calculator(QMainWindow):
         except:
             self.load_label.setText("Error in loading. Does save exist?")
         
-        
+        # Remove outcome text after 1.25s
         timer = QtCore.QTimer(self)
         timer.timeout.connect(lambda: self.load_label.setText(""))
         timer.start(1250)

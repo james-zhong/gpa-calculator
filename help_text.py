@@ -14,4 +14,15 @@ To input your grades, using tha amount of Excellences as an example, firstly, go
 Press the buttons at the top-left to save/load your inputs. A message will appear to confirm the success/error. Saving will store all inputs and can be loaded anytime, but only one save file can be saved at a time, so saving overrides previous saved data. Multiple save files may be added in the future.
 """
 
+conversion_desc = """
+If you are doing Pilot for NCEA Level 1 subjects, there will be different grades so just convert them back to NCEA grades.
+
+Low Not Achieved - Beginning (Low)              Low Merit - Consolidating (Low)
+Not Achieved - Beginning                                    Merit - Consolidating
+High Not Achieved - Beginning (High)            High Merit - Consolidating (High)
+Low Achieved - Developing (Low)                   Low Excellence - Excelling (Low)
+Achieved - Developing                                       Excellence - Excelling
+High Achieved - Developing (High)               High Excellence - Excelling (High)
+"""
+
 credits_desc = "James"
