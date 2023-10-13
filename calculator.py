@@ -8,7 +8,7 @@ from PyQt5.QtGui import QCursor
 def resource_path(relative_path):
     try:
         # PyInstaller creates a temp folder and stores path in _MEIPASS
-        base_path = sys._MEIPASS
+        base_path = sys._MEIPASS2
     except Exception:
         base_path = os.path.abspath(".")
 
@@ -53,7 +53,7 @@ class Calculator(QMainWindow):
         # Define window properties
         self.setFixedSize(1118, 750)
         self.setWindowTitle("NCEA GPA Calculator")
-        self.setWindowIcon(QtGui.QIcon(resource_path("assets/images/icon.jpg"))) # Window icon
+        self.setWindowIcon(QtGui.QIcon(resource_path("assets\\images\\icon.jpg"))) # Window icon
         
         # Taskbar icon - seems like using ctypes is the only option???
         myappid = u'mycompany.myproduct.subproduct.version'
@@ -61,11 +61,11 @@ class Calculator(QMainWindow):
         time.sleep(1)
                 
         # Custom font
-        QtGui.QFontDatabase.addApplicationFont(resource_path("assets/fonts/Poppins Light.ttf"))
-        QtGui.QFontDatabase.addApplicationFont(resource_path("assets/fonts/Antic Regular.ttf"))
+        QtGui.QFontDatabase.addApplicationFont(resource_path("assets\\fonts\\Poppins Light.ttf"))
+        QtGui.QFontDatabase.addApplicationFont(resource_path("assets\\fonts\\Antic Regular.ttf"))
         
         # Set the stylesheet
-        with open(resource_path('assets/styles/style_main.css'), 'r') as css:
+        with open(resource_path('assets\\styles\\style_main.css'), 'r') as css:
             self.setStyleSheet(css.read())
         
         # GPA variables
@@ -151,7 +151,7 @@ class Calculator(QMainWindow):
         self.load_outcome = self.load_label
         
         # Save data button
-        self.save_button_img = resource_path("assets/images/save.png")
+        self.save_button_img = resource_path("assets\\images\\save.png")
         self.save_button = QtWidgets.QPushButton(self, objectName="save")
         self.save_button.setIcon(QtGui.QIcon(self.save_button_img))
         self.save_button.setCursor(QCursor(QtCore.Qt.PointingHandCursor))
@@ -159,7 +159,7 @@ class Calculator(QMainWindow):
         self.save_button.resize(50, 50)
         
         # Load data button
-        self.load_button_img = resource_path("assets/images/load.png")
+        self.load_button_img = resource_path("assets\\images\\load.png")
         self.load_button = QtWidgets.QPushButton(self, objectName="load")
         self.load_button.setIcon(QtGui.QIcon(self.load_button_img))
         self.load_button.setCursor(QCursor(QtCore.Qt.PointingHandCursor))
@@ -285,7 +285,7 @@ class Calculator(QMainWindow):
     # Loading and saving data functions
     def save(self):
         try:
-            with open(resource_path("assets/save/data.vault"), "wb") as file:
+            with open(resource_path("assets\\save\\data.vault"), "wb") as file:
                 # Convert data to be saved into strings (pickle cannot serialize QLineEdit)
                 data = {grade: self.inputs[grade].text() for grade in grades}
                 pickle.dump(data, file)
@@ -301,7 +301,7 @@ class Calculator(QMainWindow):
 
     def load(self):
         try:
-            with open(resource_path("assets/save/data.vault"), "rb") as file:
+            with open(resource_path("assets\\save\\data.vault"), "rb") as file:
                 self.values = dict(pickle.load(file))
                 
                 # Change all the input to last save
