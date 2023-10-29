@@ -1,13 +1,13 @@
 import os, sys, re, ctypes, time, pickle, help
 from math import ceil, floor
 from PyQt5 import QtCore, QtWidgets, QtGui
-from PyQt5.QtWidgets import QApplication, QMainWindow
+from PyQt5.QtWidgets import QApplication, QMainWindow, QMessageBox
 from PyQt5.QtGui import QCursor
 
 # Get absolute path to resource
 def resource_path(relative_path):
     try:
-        # PyInstaller creates a temp folder and stores path in _MEIPASS
+        # PyInstaller creates a temp folder and stores path in _MEIPASS2
         base_path = sys._MEIPASS2
     except Exception:
         base_path = os.path.abspath(".")
@@ -148,7 +148,6 @@ class Calculator(QMainWindow):
         self.load_label = QtWidgets.QLabel(self)
         self.load_label.resize(275, 50)
         self.load_label.move(50, 55)
-        self.load_outcome = self.load_label
         
         # Save data button
         self.save_button_img = resource_path("assets\\images\\save.png")
@@ -226,7 +225,7 @@ class Calculator(QMainWindow):
             currentInputBox = self.inputs[grade]
             currentInputValue = currentInputBox.text()
             
-            if currentInputValue:
+            if currentInputValue.isnumeric():
                 currentInputValue = int(currentInputValue)
                 multiplier = grade_multiplier[grade]
                 
@@ -290,14 +289,9 @@ class Calculator(QMainWindow):
                 data = {grade: self.inputs[grade].text() for grade in grades}
                 pickle.dump(data, file)
                 
-            self.save_label.setText("Saved successfully")
-        except:
-            self.save_label.setText("Could not save")
-        
-        # Remove outcome text after 1.25s
-        timer = QtCore.QTimer(self)
-        timer.timeout.connect(lambda: self.save_label.setText(""))
-        timer.start(1250)
+            self.data_popup("Save", "Saved successfully.")
+        except Exception as e:
+            self.data_popup("Save", f"An error occured when trying to save. {e}")
 
     def load(self):
         try:
@@ -309,14 +303,16 @@ class Calculator(QMainWindow):
                     self.inputs[grade].setText(self.values[grade])
                 
                 # Display outcome
-                self.load_label.setText("Loaded last saved data")
-        except:
-            self.load_label.setText("Error in loading. Does save exist?")
-        
-        # Remove outcome text after 1.25s
-        timer = QtCore.QTimer(self)
-        timer.timeout.connect(lambda: self.load_label.setText(""))
-        timer.start(1250)
+                self.data_popup("Load", "Loaded successfully.")
+        except Exception as e:
+            self.data_popup("Load", f"There was an error while loading data. Does save file have external changes? {e}")
+
+    def data_popup(self, title, result):
+        self.popup = QtWidgets.QMessageBox(self)
+        self.popup.setWindowTitle(title)
+        self.popup.setText(result)
+        self.popup.setStandardButtons(QMessageBox.Ok)
+        self.popup.show()
 
 def window():
     app = QApplication(sys.argv)
